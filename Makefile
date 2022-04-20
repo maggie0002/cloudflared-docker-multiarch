@@ -34,8 +34,10 @@ ifeq ($(FIPS), true)
 	GO_BUILD_TAGS := $(GO_BUILD_TAGS) osusergo netgo fips
 	VERSION_FLAGS := $(VERSION_FLAGS) -X "main.BuildType=FIPS"
 endif
+# Strip symbol table and debugging info to reduce build size by around 10mb: 
+# https://github.com/cloudflare/cloudflared/pull/102
+LDFLAGS := -ldflags='$(VERSION_FLAGS) $(LINK_FLAGS) -s -w'
 
-LDFLAGS := -ldflags='$(VERSION_FLAGS) $(LINK_FLAGS)'
 ifneq ($(GO_BUILD_TAGS),)
 	GO_BUILD_TAGS := -tags "$(GO_BUILD_TAGS)"
 endif
