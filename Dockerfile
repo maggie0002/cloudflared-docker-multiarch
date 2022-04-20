@@ -20,6 +20,7 @@ FROM scratch
 
 # copy our compiled binary
 COPY --from=builder /go/src/github.com/cloudflare/cloudflared/cloudflared .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt 
 
 # command / entrypoint of container
 ENTRYPOINT ["./cloudflared", "--no-autoupdate"]
