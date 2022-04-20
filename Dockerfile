@@ -15,15 +15,13 @@ COPY . .
 # compile cloudflared
 RUN make cloudflared
 
-# use a distroless base image with glibc
-FROM gcr.io/distroless/base-debian10:nonroot
+# use an empty image, and rely on GoLang to manage binaries
+FROM scratch
 
-# copy our compiled binary
-COPY --from=builder --chown=nonroot /go/src/github.com/cloudflare/cloudflared/cloudflared /usr/local/bin/
-
-# run as non-privileged user
-USER nonroot
+# copy required files into the container
+COPY --from=builder /go/src/github.com/cloudflare/cloudflared/cloudflared .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt 
 
 # command / entrypoint of container
-ENTRYPOINT ["cloudflared", "--no-autoupdate"]
+ENTRYPOINT ["./cloudflared", "--no-autoupdate"]
 CMD ["version"]
