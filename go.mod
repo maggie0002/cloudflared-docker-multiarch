@@ -1,4 +1,4 @@
-module github.com/cloudflare/cloudflared
+module cloudflared-docker-multiarch/tree/test-branch
 
 go 1.17
 
