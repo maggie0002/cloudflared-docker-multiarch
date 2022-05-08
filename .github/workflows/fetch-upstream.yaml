@@ -1,0 +1,20 @@
+
+name: "Fetch upstream changes and create tags"
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  fetch-and-tag:
+    name: "Fetch upstream changes and create tags"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run script
+        run: |
+          bash $GITHUB_WORKSPACE/.github/workflows/rebase.sh
