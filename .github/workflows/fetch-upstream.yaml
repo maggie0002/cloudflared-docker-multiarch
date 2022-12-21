@@ -33,14 +33,15 @@ jobs:
       - name: Get and store latest tag as output variable
         id: fetch_and_tag_step
         run: |
-          latest_tag=$(git log --tags --simplify-by-decoration --pretty="format:%D" --reverse -n1  |cut -d" " -f2) && \
-          echo "latest_tag=$(git log --tags --simplify-by-decoration --pretty="format:%D" --reverse -n1  |cut -d" " -f2)" >> "$GITHUB_ENV" && \
+          echo $(git log --tags --simplify-by-decoration --pretty="format:%D" --reverse -n1  | cut -d" " -f2 | sed '$s/,$//') && \
+          latest_tag=$(git log --tags --simplify-by-decoration --pretty="format:%D" --reverse -n1  | cut -d" " -f2 | sed '$s/,$//') && \
+          echo "latest_tag=$(git log --tags --simplify-by-decoration --pretty="format:%D" --reverse -n1  | cut -d" " -f2 | sed '$s/,$//')" >> "$GITHUB_ENV" && \
           echo "::set-output name=current_tag::$latest_tag"
 
       - name: If a new tag from CloudFlare
         if: ${{ !endsWith(env.latest_tag, '-ma') }}
         run: |
-          git tag ${{env.latest_tag}}-ma
+          git tag "${{env.latest_tag}}-ma"
       - name: Push changes
         run: |
           git push origin master --tags -f
